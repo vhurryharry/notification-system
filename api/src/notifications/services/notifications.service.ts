@@ -13,27 +13,23 @@ import emailHandlerService from "./handlers/email.handler.service";
 import pushHandlerService from "./handlers/push.handler.service";
 
 class NotificationsService implements Omit<CRUD, "list"> {
-  async create(
-    resource: CreateNotificationDto
-  ): Promise<Notification | undefined> {
+  async create(resource: CreateNotificationDto): Promise<void> {
     const channels = await channelsDao.getChannels();
-    const channel = channels.find((ch) => ch.id === resource.channel);
+    for (const channel of channels) {
+      switch (channel?.name) {
+        case "SMS":
+          await smsHandlerService.send(resource, channel.id);
+          break;
 
-    switch (channel?.name) {
-      case "SMS":
-        smsHandlerService.send(resource);
-        break;
+        case "Email":
+          await emailHandlerService.send(resource, channel.id);
+          break;
 
-      case "Email":
-        emailHandlerService.send(resource);
-        break;
-
-      case "Push Notification":
-        pushHandlerService.send(resource);
-        break;
+        case "Push Notification":
+          await pushHandlerService.send(resource, channel.id);
+          break;
+      }
     }
-
-    return notificationsDao.addNotification(resource);
   }
 
   async deleteById(id: number): Promise<Notification> {

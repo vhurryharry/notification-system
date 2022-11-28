@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { getPrisma } from "@app/database";
 import createHttpError from "http-errors";
 
@@ -50,6 +50,25 @@ class UsersDao {
     });
 
     return result;
+  }
+
+  async getUsers(channel: number, category: number): Promise<Array<User>> {
+    const users = await this.prisma.user.findMany({
+      where: {
+        subscribed: {
+          some: {
+            id: category,
+          },
+        },
+        channels: {
+          some: {
+            id: channel,
+          },
+        },
+      },
+    });
+
+    return users;
   }
 }
 

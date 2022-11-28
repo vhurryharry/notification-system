@@ -18,8 +18,8 @@ class NotificationsController {
   }
 
   async createNotification(req: express.Request, res: express.Response) {
-    const notificationId = await notificationsService.create(req.body);
-    res.status(201).send({ id: notificationId });
+    await notificationsService.create(req.body);
+    res.status(201).send();
   }
 
   async put(req: express.Request, res: express.Response) {

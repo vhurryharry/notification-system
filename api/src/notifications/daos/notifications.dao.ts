@@ -1,4 +1,4 @@
-import { PrismaClient, Notification } from "@prisma/client";
+import { PrismaClient, Notification, User } from "@prisma/client";
 import { getPrisma } from "@app/database";
 
 import { CreateNotificationDto } from "@app/notifications/dtos/create.notification.dto";
@@ -14,12 +14,13 @@ class NotificationsDao {
   }
 
   async addNotification(
-    notification: CreateNotificationDto
+    notification: CreateNotificationDto,
+    users: Array<User>
   ): Promise<Notification> {
     const result = await this.prisma.notification.create({
       data: {
         content: notification.content,
-        createdAt: new Date(),
+        sentAt: new Date(),
         category: {
           connect: {
             id: notification.category,
@@ -32,6 +33,17 @@ class NotificationsDao {
         },
       },
     });
+
+    // Unfortunately prisma's `createMany` method is not supported in SQLite now
+    for (const user of users) {
+      await this.prisma.notificationsForUsers.create({
+        data: {
+          userId: user.id,
+          notificationId: result.id,
+          readByUser: false,
+        },
+      });
+    }
 
     return result;
   }
