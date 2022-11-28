@@ -1,7 +1,9 @@
+import categoriesService from "@app/categories/services/categories.service";
+import channelsService from "@app/channels/services/channels.service";
 import notificationsService from "@app/notifications/services/notifications.service";
 import express from "express";
 
-class EventsMiddleware {
+class NotificationsMiddleware {
   async validateRequiredNotificationBodyFields(
     req: express.Request,
     res: express.Response,
@@ -29,6 +31,40 @@ class EventsMiddleware {
     } else {
       res.status(404).send({
         error: `Notification ${req.params.notificationId} not found`,
+      });
+    }
+  }
+
+  async validateCategoryExists(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) {
+    const category = await categoriesService.readById(
+      parseInt(req.params.category)
+    );
+    if (category) {
+      next();
+    } else {
+      res.status(404).send({
+        error: `Unknown Category ${req.params.category}`,
+      });
+    }
+  }
+
+  async validateChannelExists(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) {
+    const channel = await channelsService.readById(
+      parseInt(req.params.channel)
+    );
+    if (channel) {
+      next();
+    } else {
+      res.status(404).send({
+        error: `Unknown Channel ${req.params.channel}`,
       });
     }
   }
@@ -61,4 +97,4 @@ class EventsMiddleware {
   }
 }
 
-export default new EventsMiddleware();
+export default new NotificationsMiddleware();

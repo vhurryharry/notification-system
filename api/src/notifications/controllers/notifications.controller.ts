@@ -3,23 +3,23 @@ import notificationsService from "@app/notifications/services/notifications.serv
 
 class NotificationsController {
   async listNotifications(req: express.Request, res: express.Response) {
-    const events = await notificationsService.list(
-      req.body.category,
-      req.body.channel,
+    const notifications = await notificationsService.list(
+      req.body.categories,
+      req.body.channels,
       req.body.limit,
       req.body.page
     );
-    res.status(200).send(events);
+    res.status(200).send(notifications);
   }
 
   async getNotificationById(req: express.Request, res: express.Response) {
-    const event = await notificationsService.readById(req.body.id);
-    res.status(200).send(event);
+    const notification = await notificationsService.readById(req.body.id);
+    res.status(200).send(notification);
   }
 
   async createNotification(req: express.Request, res: express.Response) {
-    const eventId = await notificationsService.create(req.body);
-    res.status(201).send({ id: eventId });
+    const notificationId = await notificationsService.create(req.body);
+    res.status(201).send({ id: notificationId });
   }
 
   async put(req: express.Request, res: express.Response) {

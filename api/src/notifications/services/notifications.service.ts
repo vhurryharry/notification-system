@@ -7,9 +7,32 @@ import { CreateNotificationDto } from "@app/notifications/dtos/create.notificati
 import { GetNotificationDto } from "../dtos/get.notification.dto";
 import { ListNotificationsDto } from "../dtos/list.notifications.dto";
 import { PutNotificationDto } from "../dtos/put.notification.dto";
+import channelsDao from "@app/channels/daos/channels.dao";
+import smsHandlerService from "./handlers/sms.handler.service";
+import emailHandlerService from "./handlers/email.handler.service";
+import pushHandlerService from "./handlers/push.handler.service";
 
 class NotificationsService implements Omit<CRUD, "list"> {
-  async create(resource: CreateNotificationDto): Promise<Notification> {
+  async create(
+    resource: CreateNotificationDto
+  ): Promise<Notification | undefined> {
+    const channels = await channelsDao.getChannels();
+    const channel = channels.find((ch) => ch.id === resource.channel);
+
+    switch (channel?.name) {
+      case "SMS":
+        smsHandlerService.send(resource);
+        break;
+
+      case "Email":
+        emailHandlerService.send(resource);
+        break;
+
+      case "Push Notification":
+        pushHandlerService.send(resource);
+        break;
+    }
+
     return notificationsDao.addNotification(resource);
   }
 
@@ -18,21 +41,16 @@ class NotificationsService implements Omit<CRUD, "list"> {
   }
 
   async list(
-    category: number,
-    channel: number,
+    categories: Array<number>,
+    channels: Array<number>,
     limit: number,
     page: number
   ): Promise<ListNotificationsDto> {
-    return await notificationsDao.getNotifications(
-      category,
-      channel,
-      limit,
-      page
-    );
+    return notificationsDao.getNotifications(categories, channels, limit, page);
   }
 
   async readById(id: number): Promise<GetNotificationDto | null> {
-    return await notificationsDao.getNotification(id);
+    return notificationsDao.getNotification(id);
   }
 
   async putById(

@@ -1,6 +1,6 @@
 import { CommonRoutesConfig } from "@app/common/common.routes.config";
-import eventsController from "@app/notifications/controllers/notifications.controller";
-import eventsMiddleware from "@app/notifications/middleware/notifications.middleware";
+import notificationsController from "@app/notifications/controllers/notifications.controller";
+import notificationsMiddleware from "@app/notifications/middleware/notifications.middleware";
 import express from "express";
 
 export class NotificationsRoutes extends CommonRoutesConfig {
@@ -12,20 +12,25 @@ export class NotificationsRoutes extends CommonRoutesConfig {
     this.app
       .route(`/notifications`)
       .get(
-        eventsMiddleware.extractPaginationParameters,
-        eventsController.listNotifications
+        notificationsMiddleware.extractPaginationParameters,
+        notificationsController.listNotifications
       )
       .post(
-        eventsMiddleware.validateRequiredNotificationBodyFields,
-        eventsController.createNotification
+        notificationsMiddleware.validateRequiredNotificationBodyFields,
+        notificationsMiddleware.validateCategoryExists,
+        notificationsMiddleware.validateChannelExists,
+        notificationsController.createNotification
       );
 
-    this.app.param(`notificationId`, eventsMiddleware.extractNotificationId);
+    this.app.param(
+      `notificationId`,
+      notificationsMiddleware.extractNotificationId
+    );
     this.app
       .route(`/notifications/:notificationId`)
-      .all(eventsMiddleware.validateNotificationExists)
-      .get(eventsController.getNotificationById)
-      .delete(eventsController.removeNotification);
+      .all(notificationsMiddleware.validateNotificationExists)
+      .get(notificationsController.getNotificationById)
+      .delete(notificationsController.removeNotification);
 
     return this.app;
   }
