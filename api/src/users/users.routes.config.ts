@@ -16,6 +16,11 @@ export class UsersRoutes extends CommonRoutesConfig {
         usersController.login
       );
 
+    this.app.param(`userId`, usersMiddleware.extractUserId);
+    this.app
+      .route("/:userId/notifications")
+      .get(usersController.getNotifications);
+
     return this.app;
   }
 }

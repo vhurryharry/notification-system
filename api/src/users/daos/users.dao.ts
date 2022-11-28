@@ -37,6 +37,20 @@ class UsersDao {
       accessToken,
     };
   }
+
+  async getUser(id: number): Promise<GetUserDto | null> {
+    const result = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        channels: true,
+        subscribed: true,
+      },
+    });
+
+    return result;
+  }
 }
 
 export default new UsersDao();

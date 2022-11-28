@@ -51,13 +51,13 @@ const main = async () => {
       },
       data: {
         subscribed: {
-          create: seedUser.subscribed.map((index) => ({
-            categoryId: categories[index].id,
+          connect: seedUser.subscribed.map((index) => ({
+            id: categories[index].id,
           })),
         },
         channels: {
-          create: seedUser.channels.map((index) => ({
-            channelId: channels[index].id,
+          connect: seedUser.channels.map((index) => ({
+            id: channels[index].id,
           })),
         },
       },

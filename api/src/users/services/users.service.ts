@@ -5,6 +5,10 @@ class UsersService {
   async login(email: string, password: string): Promise<GetUserDto> {
     return usersDao.login(email, password);
   }
+
+  async readById(id: number): Promise<GetUserDto | null> {
+    return usersDao.getUser(id);
+  }
 }
 
 export default new UsersService();

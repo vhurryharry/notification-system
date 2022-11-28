@@ -43,8 +43,8 @@ class NotificationsService implements Omit<CRUD, "list"> {
   async list(
     categories: Array<number>,
     channels: Array<number>,
-    limit: number,
-    page: number
+    limit?: number,
+    page?: number
   ): Promise<ListNotificationsDto> {
     return notificationsDao.getNotifications(categories, channels, limit, page);
   }

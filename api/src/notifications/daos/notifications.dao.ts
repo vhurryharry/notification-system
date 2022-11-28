@@ -39,8 +39,8 @@ class NotificationsDao {
   async getNotifications(
     categories: Array<number>,
     channels: Array<number>,
-    limit: number,
-    page: number
+    limit?: number,
+    page?: number
   ): Promise<ListNotificationsDto> {
     const result = await this.prisma.notification.findMany({
       where: {
@@ -51,7 +51,7 @@ class NotificationsDao {
         category: true,
         channel: true,
       },
-      skip: limit * page,
+      skip: limit && page ? limit * page : 0,
       take: limit,
     });
 
