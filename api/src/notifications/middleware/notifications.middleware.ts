@@ -1,64 +1,46 @@
-import eventsService from "@app/events/services/events.service";
+import notificationsService from "@app/notifications/services/notifications.service";
 import express from "express";
 
 class EventsMiddleware {
-  async validateRequiredEventBodyFields(
+  async validateRequiredNotificationBodyFields(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    if (
-      req.body &&
-      req.body.name &&
-      req.body.isOutside &&
-      req.body.location &&
-      req.body.date
-    ) {
+    if (req.body && req.body.content && req.body.category && req.body.channel) {
       next();
     } else {
       res.status(400).send({
-        error: `Missing required fields - name, isOutside, location, date`,
+        error: `Missing required fields - content, category, channel`,
       });
     }
   }
 
-  async validateEventExists(
+  async validateNotificationExists(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    const event = await eventsService.readById(parseInt(req.params.eventId));
-    if (event) {
+    const notification = await notificationsService.readById(
+      parseInt(req.params.notificationId)
+    );
+    if (notification) {
       next();
     } else {
       res.status(404).send({
-        error: `Event ${req.params.eventId} not found`,
+        error: `Notification ${req.params.notificationId} not found`,
       });
     }
   }
 
-  async extractEventId(
+  async extractNotificationId(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
     req.body = {
       ...req.body,
-      id: parseInt(req.params.eventId),
-    };
-
-    next();
-  }
-
-  async extractTime(
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) {
-    req.body = {
-      ...req.body,
-      from: req.query.from ? new Date(req.query.from as string) : new Date(),
-      until: req.query.until ? new Date(req.query.until as string) : null,
+      id: parseInt(req.params.notificationId),
     };
 
     next();

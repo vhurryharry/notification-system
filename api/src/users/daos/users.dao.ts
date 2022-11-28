@@ -1,8 +1,9 @@
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { getPrisma } from "@app/database";
+import createHttpError from "http-errors";
 
-import { CreateUserDto } from "@app/users/dtos/create.user.dto";
-import { PutUserDto } from "@app/users/dtos/put.user.dto";
+import { GetUserDto } from "@app/users/dtos/get.user.dto";
+import { createAccessToken, verifyPassword } from "@app/utils/auth";
 
 class UsersDao {
   prisma: PrismaClient;
@@ -11,56 +12,30 @@ class UsersDao {
     this.prisma = getPrisma();
   }
 
-  async addUser(user: CreateUserDto): Promise<User> {
-    const result = await this.prisma.user.create({
-      data: {
-        name: user.name,
-      },
-    });
-
-    return result;
-  }
-
-  async getUsers(limit: number, page: number): Promise<User[]> {
-    const result = await this.prisma.user.findMany({
-      skip: limit * page,
-      take: limit,
-    });
-
-    return result;
-  }
-
-  async getUser(id: number): Promise<User | null> {
-    const result = await this.prisma.user.findUnique({
+  async login(email: string, password: string): Promise<GetUserDto> {
+    const user = await this.prisma.user.findUnique({
       where: {
-        id,
+        email,
       },
     });
 
-    return result;
-  }
+    if (!user) {
+      throw createHttpError.NotFound("User not registered");
+    }
 
-  async updateUser(id: number, user: PutUserDto): Promise<User> {
-    const result = await this.prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        name: user.name,
-      },
-    });
+    const checkPassword = verifyPassword(password, user.password);
 
-    return result;
-  }
+    if (!checkPassword) {
+      throw createHttpError.Unauthorized("Email address or password not valid");
+    }
 
-  async removeUser(id: number): Promise<User> {
-    const result = await this.prisma.user.delete({
-      where: {
-        id,
-      },
-    });
+    const { ["password"]: _, ...userDto } = user;
+    const accessToken = await createAccessToken(userDto);
 
-    return result;
+    return {
+      ...userDto,
+      accessToken,
+    };
   }
 }
 

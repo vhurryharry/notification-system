@@ -13,7 +13,7 @@ datasource db {
 model User {
   id          Int                 @id @default(autoincrement())
   name        String
-  email       String
+  email       String              @unique
   phoneNumber String
   password    String
   subscribed  UsersOnCategories[]
@@ -55,6 +55,7 @@ model UsersOnChannels {
 model Notification {
   id         Int      @id @default(autoincrement())
   content    String
+  createdAt  DateTime
   category   Category @relation(fields: [categoryId], references: [id])
   categoryId Int
   channel    Channel  @relation(fields: [channelId], references: [id])

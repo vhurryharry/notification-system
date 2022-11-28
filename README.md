@@ -1,21 +1,21 @@
 ## Setup Backend
 
-- `npm install`
-- `npm run setupDB` (This will generate template data, create the database file and insert the data generated.)
+- `yarn`
+- `yarn setupDB` (This will create the database file and seed the initial data.)
 
 For production:
 
-- `npm run build`
-- `npm start`
+- `yarn build`
+- `yarn start`
 
 For development:
 
-- `npm run dev`
+- `yarn dev`
 
 ## Setup Frontend
 
 Frontend is currently setup to use local backend running at 4040 port, which is the default port configured for the backend.
 
 - `cd app`
-- `npm install`
-- `npm start`
+- `yarn`
+- `yarn start`

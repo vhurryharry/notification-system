@@ -1,5 +1,4 @@
 import express from "express";
-import usersService from "@app/users/services/users.service";
 
 class UsersMiddleware {
   async validateRequiredUserBodyFields(
@@ -7,26 +6,11 @@ class UsersMiddleware {
     res: express.Response,
     next: express.NextFunction
   ) {
-    if (req.body && req.body.name) {
+    if (req.body && req.body.email && req.body.password) {
       next();
     } else {
       res.status(400).send({
         error: `Missing required field name`,
-      });
-    }
-  }
-
-  async validateOrgainzerExists(
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) {
-    const user = await usersService.readById(parseInt(req.params.userId));
-    if (user) {
-      next();
-    } else {
-      res.status(404).send({
-        error: `User ${req.params.userId} not found`,
       });
     }
   }

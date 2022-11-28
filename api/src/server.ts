@@ -3,7 +3,7 @@ import { Server } from "http";
 
 import { getPrisma } from "./database";
 import { CommonRoutesConfig } from "@app/common/common.routes.config";
-import { EventsRoutes } from "@app/events/events.routes.config";
+import { NotificationsRoutes } from "@app/notifications/notifications.routes.config";
 import { UsersRoutes } from "@app/users/users.routes.config";
 
 export const start = async (): Promise<Server> =>
@@ -15,7 +15,7 @@ export const start = async (): Promise<Server> =>
 
       getPrisma();
 
-      routes.push(new EventsRoutes(app));
+      routes.push(new NotificationsRoutes(app));
       routes.push(new UsersRoutes(app));
 
       app.get("/", (req, res) => {

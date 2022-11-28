@@ -10,27 +10,11 @@ export class UsersRoutes extends CommonRoutesConfig {
 
   configureRoutes() {
     this.app
-      .route(`/users`)
-      .get(
-        usersMiddleware.extractPaginationParameters,
-        usersController.listUsers
-      )
+      .route(`/login`)
       .post(
         usersMiddleware.validateRequiredUserBodyFields,
-        usersController.createUser
+        usersController.login
       );
-
-    this.app.param(`userId`, usersMiddleware.extractUserId);
-    this.app
-      .route(`/users/:userId`)
-      .all(usersMiddleware.validateOrgainzerExists)
-      .get(usersController.getUserById)
-      .delete(usersController.removeUser);
-
-    this.app.put(`/users/:userId`, [
-      usersMiddleware.validateRequiredUserBodyFields,
-      usersController.put,
-    ]);
 
     return this.app;
   }
