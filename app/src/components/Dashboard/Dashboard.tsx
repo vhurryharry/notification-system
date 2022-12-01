@@ -1,8 +1,10 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loadNotifications } from "../../actions/notificationsActions";
+import {
+  loadNotifications,
+  sendNotification,
+} from "../../actions/notificationsActions";
 import { logoutUser } from "../../actions/userActions";
 import { Notification } from "../../reducers/notificationsReducer";
 import {
@@ -11,7 +13,7 @@ import {
 } from "../../selectors/notificationsSelectors";
 import { getUser } from "../../selectors/userSelectors";
 import { AppDispatch } from "../../store";
-import { API_URL } from "../../utils/api";
+
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -56,25 +58,12 @@ const Dashboard = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    axios
-      .post(
-        `${API_URL}/notifications`,
-        {
-          message,
-          category,
-        },
-        {
-          headers: {
-            Authorization: `bearer ${user?.accessToken}`,
-          },
-        }
-      )
-      .then(() => {
-        setMessage("");
-        setCategory(1);
+    dispatch(sendNotification(message, category)).then(() => {
+      setMessage("");
+      setCategory(1);
 
-        dispatch(loadNotifications(user!.id));
-      });
+      dispatch(loadNotifications(user!.id));
+    });
   };
 
   const renderNotification = (notification: Notification) => {
