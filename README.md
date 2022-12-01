@@ -1,3 +1,5 @@
+# Setup
+
 ## Setup Backend
 
 - `yarn`
@@ -19,3 +21,19 @@ Frontend is currently setup to use local backend running at 4040 port, which is 
 - `cd app`
 - `yarn`
 - `yarn start`
+
+# Tech
+
+## Backend
+
+- Node.js
+- Express
+- Typescript
+- Prisma
+- SQLite
+
+## Frontend
+
+- React.js
+- Typescript
+- Redux-toolkit
