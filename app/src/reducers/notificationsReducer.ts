@@ -12,6 +12,9 @@ export type Notification = {
     id: number;
     name: string;
   };
+  sender: {
+    name: string;
+  };
 };
 
 export type NotificationsState = {

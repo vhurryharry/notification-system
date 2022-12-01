@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import createHttpError from "http-errors";
-import { sign, verify } from "jsonwebtoken";
+import { JwtPayload, sign, verify } from "jsonwebtoken";
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -40,7 +40,7 @@ export const verifyAccessToken = (token: string) => {
         return reject(createHttpError.Unauthorized(message));
       }
 
-      resolve(payload);
+      resolve((payload as JwtPayload).payload);
     });
   });
 };

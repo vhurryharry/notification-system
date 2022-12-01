@@ -21,6 +21,11 @@ class NotificationsDao {
       data: {
         message: notification.message,
         sentAt: new Date(),
+        sender: {
+          connect: {
+            id: notification.user.id,
+          },
+        },
         category: {
           connect: {
             id: notification.category,
@@ -62,6 +67,11 @@ class NotificationsDao {
       include: {
         category: true,
         channel: true,
+        sender: {
+          select: {
+            name: true,
+          },
+        },
       },
       skip: limit && page ? limit * page : 0,
       take: limit,
@@ -91,6 +101,11 @@ class NotificationsDao {
       include: {
         category: true,
         channel: true,
+        sender: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 

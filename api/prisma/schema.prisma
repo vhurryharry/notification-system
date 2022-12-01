@@ -19,6 +19,7 @@ model User {
   subscribed            Category[]
   channels              Channel[]
   NotificationsForUsers NotificationsForUsers[]
+  notifications         Notification[]
 }
 
 model Category {
@@ -39,11 +40,13 @@ model Notification {
   id                    Int                     @id @default(autoincrement())
   message               String
   sentAt                DateTime
+  sender                User                    @relation(fields: [senderId], references: [id])
   category              Category                @relation(fields: [categoryId], references: [id])
   categoryId            Int
   channel               Channel                 @relation(fields: [channelId], references: [id])
   channelId             Int
   NotificationsForUsers NotificationsForUsers[]
+  senderId              Int
 }
 
 model NotificationsForUsers {

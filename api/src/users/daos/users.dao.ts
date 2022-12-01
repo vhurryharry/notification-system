@@ -4,6 +4,7 @@ import createHttpError from "http-errors";
 
 import { GetUserDto } from "@app/users/dtos/get.user.dto";
 import { createAccessToken, verifyPassword } from "@app/utils/auth";
+import { exclude } from "@app/utils/db";
 
 class UsersDao {
   prisma: PrismaClient;
@@ -49,7 +50,7 @@ class UsersDao {
       },
     });
 
-    return result;
+    return exclude(result, ["password"]);
   }
 
   async getUsers(channel: number, category: number): Promise<Array<User>> {
@@ -68,7 +69,7 @@ class UsersDao {
       },
     });
 
-    return users;
+    return users.map((user) => exclude(user, ["password", "email"]));
   }
 }
 

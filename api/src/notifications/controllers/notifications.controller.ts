@@ -39,7 +39,10 @@ class NotificationsController {
     next: express.NextFunction
   ) {
     try {
-      await notificationsService.create(req.body);
+      await notificationsService.create({
+        ...req.body,
+        user: (req as any).user,
+      });
       res.status(201).send();
     } catch (e) {
       next(e);

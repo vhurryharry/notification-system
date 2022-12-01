@@ -69,6 +69,7 @@ const Dashboard = () => {
   const renderNotification = (notification: Notification) => {
     return (
       <tr key={"notification" + notification.id}>
+        <th>{notification.sender.name}</th>
         <th>{notification.category.name}</th>
         <th>{notification.channel.name}</th>
         <th>{notification.message}</th>
@@ -116,6 +117,7 @@ const Dashboard = () => {
           <table>
             <thead>
               <tr>
+                <th>Sender Name</th>
                 <th>Category</th>
                 <th>Channel</th>
                 <th>Message</th>
