@@ -9,11 +9,11 @@ class NotificationsMiddleware {
     res: express.Response,
     next: express.NextFunction
   ) {
-    if (req.body && req.body.content && req.body.category && req.body.channel) {
+    if (req.body && req.body.message && req.body.category) {
       next();
     } else {
       res.status(400).send({
-        error: `Missing required fields - content, category, channel`,
+        error: `Missing required fields - message, category`,
       });
     }
   }
@@ -24,7 +24,7 @@ class NotificationsMiddleware {
     next: express.NextFunction
   ) {
     const notification = await notificationsService.readById(
-      parseInt(req.params.notificationId)
+      parseInt(req.body.notificationId)
     );
     if (notification) {
       next();
@@ -41,13 +41,13 @@ class NotificationsMiddleware {
     next: express.NextFunction
   ) {
     const category = await categoriesService.readById(
-      parseInt(req.params.category)
+      parseInt(req.body.category)
     );
     if (category) {
       next();
     } else {
       res.status(404).send({
-        error: `Unknown Category ${req.params.category}`,
+        error: `Unknown Category ${req.body.category}`,
       });
     }
   }
@@ -57,14 +57,12 @@ class NotificationsMiddleware {
     res: express.Response,
     next: express.NextFunction
   ) {
-    const channel = await channelsService.readById(
-      parseInt(req.params.channel)
-    );
+    const channel = await channelsService.readById(parseInt(req.body.channel));
     if (channel) {
       next();
     } else {
       res.status(404).send({
-        error: `Unknown Channel ${req.params.channel}`,
+        error: `Unknown Channel ${req.body.channel}`,
       });
     }
   }

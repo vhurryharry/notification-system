@@ -1,4 +1,5 @@
 import { CommonRoutesConfig } from "@app/common/common.routes.config";
+import authMiddleware from "@app/common/middleware/auth.middleware";
 import express from "express";
 import categoriesController from "./controllers/categories.controller";
 import categoriesMiddleware from "./middleware/categories.middleware";
@@ -11,6 +12,7 @@ export class CategoriesRoutes extends CommonRoutesConfig {
   configureRoutes() {
     this.app
       .route(`/categories`)
+      .all(authMiddleware.auth)
       .get(categoriesController.listCategories)
       .post(
         categoriesMiddleware.validateRequiredCategoryBodyFields,
@@ -20,7 +22,7 @@ export class CategoriesRoutes extends CommonRoutesConfig {
     this.app.param(`categoryId`, categoriesMiddleware.extractCategoryId);
     this.app
       .route(`/categories/:categoryId`)
-      .all(categoriesMiddleware.validateCategoryExists)
+      .all(authMiddleware.auth, categoriesMiddleware.validateCategoryExists)
       .get(categoriesController.getCategoryById)
       .delete(categoriesController.removeCategory);
 

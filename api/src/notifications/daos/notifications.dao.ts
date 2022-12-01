@@ -19,7 +19,7 @@ class NotificationsDao {
   ): Promise<Notification> {
     const result = await this.prisma.notification.create({
       data: {
-        content: notification.content,
+        content: notification.message,
         sentAt: new Date(),
         category: {
           connect: {

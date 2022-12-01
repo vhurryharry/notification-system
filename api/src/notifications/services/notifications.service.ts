@@ -21,7 +21,7 @@ class NotificationsService implements Omit<CRUD, "list"> {
           await smsHandlerService.send(resource, channel.id);
           break;
 
-        case "Email":
+        case "E-mail":
           await emailHandlerService.send(resource, channel.id);
           break;
 

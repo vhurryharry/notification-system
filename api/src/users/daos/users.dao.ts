@@ -23,7 +23,7 @@ class UsersDao {
       throw createHttpError.NotFound("User not registered");
     }
 
-    const checkPassword = verifyPassword(password, user.password);
+    const checkPassword = await verifyPassword(password, user.password);
 
     if (!checkPassword) {
       throw createHttpError.Unauthorized("Email address or password not valid");

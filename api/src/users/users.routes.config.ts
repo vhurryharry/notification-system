@@ -1,4 +1,5 @@
 import { CommonRoutesConfig } from "@app/common/common.routes.config";
+import authMiddleware from "@app/common/middleware/auth.middleware";
 import usersController from "@app/users/controllers/users.controller";
 import usersMiddleware from "@app/users/middleware/users.middleware";
 import express from "express";
@@ -19,7 +20,7 @@ export class UsersRoutes extends CommonRoutesConfig {
     this.app.param(`userId`, usersMiddleware.extractUserId);
     this.app
       .route("/:userId/notifications")
-      .get(usersController.getNotifications);
+      .get(authMiddleware.auth, usersController.getNotifications);
 
     return this.app;
   }

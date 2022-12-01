@@ -1,4 +1,5 @@
 import { CommonRoutesConfig } from "@app/common/common.routes.config";
+import authMiddleware from "@app/common/middleware/auth.middleware";
 import express from "express";
 import channelsController from "./controllers/channels.controller";
 import channelsMiddleware from "./middleware/channels.middleware";
@@ -11,6 +12,7 @@ export class ChannelsRoutes extends CommonRoutesConfig {
   configureRoutes() {
     this.app
       .route(`/channels`)
+      .all(authMiddleware.auth)
       .get(channelsController.listChannels)
       .post(
         channelsMiddleware.validateRequiredChannelBodyFields,
@@ -20,7 +22,7 @@ export class ChannelsRoutes extends CommonRoutesConfig {
     this.app.param(`channelId`, channelsMiddleware.extractChannelId);
     this.app
       .route(`/channels/:channelId`)
-      .all(channelsMiddleware.validateChannelExists)
+      .all(authMiddleware.auth, channelsMiddleware.validateChannelExists)
       .get(channelsController.getChannelById)
       .delete(channelsController.removeChannel);
 

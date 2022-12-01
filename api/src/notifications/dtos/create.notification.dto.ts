@@ -1,5 +1,5 @@
 export interface CreateNotificationDto {
-  content: string;
+  message: string;
   category: number;
   channel?: number;
 }

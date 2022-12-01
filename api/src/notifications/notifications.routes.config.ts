@@ -1,4 +1,5 @@
 import { CommonRoutesConfig } from "@app/common/common.routes.config";
+import authMiddleware from "@app/common/middleware/auth.middleware";
 import notificationsController from "@app/notifications/controllers/notifications.controller";
 import notificationsMiddleware from "@app/notifications/middleware/notifications.middleware";
 import express from "express";
@@ -12,13 +13,14 @@ export class NotificationsRoutes extends CommonRoutesConfig {
     this.app
       .route(`/notifications`)
       .get(
+        authMiddleware.auth,
         notificationsMiddleware.extractPaginationParameters,
         notificationsController.listNotifications
       )
       .post(
+        authMiddleware.auth,
         notificationsMiddleware.validateRequiredNotificationBodyFields,
         notificationsMiddleware.validateCategoryExists,
-        notificationsMiddleware.validateChannelExists,
         notificationsController.createNotification
       );
 
@@ -28,7 +30,10 @@ export class NotificationsRoutes extends CommonRoutesConfig {
     );
     this.app
       .route(`/notifications/:notificationId`)
-      .all(notificationsMiddleware.validateNotificationExists)
+      .all(
+        authMiddleware.auth,
+        notificationsMiddleware.validateNotificationExists
+      )
       .get(notificationsController.getNotificationById)
       .delete(notificationsController.removeNotification);
 
