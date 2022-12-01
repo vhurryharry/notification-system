@@ -1,14 +1,36 @@
 import axios from "axios";
-import React, { useState } from "react";
-import useToken from "../../hooks/useToken";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loadNotifications } from "../../actions/notificationsActions";
+import useUser from "../../hooks/useUser";
+import { Notification } from "../../reducers/notificationsReducer";
+import {
+  getNotifications,
+  isLoading,
+} from "../../selectors/notificationsSelectors";
+import { AppDispatch } from "../../store";
 import { API_URL } from "../../utils/api";
 import "./Dashboard.css";
 
 const Dashboard = () => {
-  const { clearUser, user } = useToken();
+  const { clearUser, user } = useUser();
 
   const [category, setCategory] = useState(1);
   const [message, setMessage] = useState("");
+
+  const dispatch: AppDispatch = useDispatch();
+
+  const loadingNotifications = useSelector(isLoading);
+  const notifications = useSelector(getNotifications);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && !loadingNotifications) {
+      dispatch(loadNotifications(user.id));
+    }
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const categories = [
     {
@@ -27,6 +49,7 @@ const Dashboard = () => {
 
   const logout = () => {
     clearUser();
+    navigate(0);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,9 +68,23 @@ const Dashboard = () => {
           },
         }
       )
-      .then((response) => {
-        console.log(response);
+      .then(() => {
+        setMessage("");
+        setCategory(1);
+
+        dispatch(loadNotifications(user!.id));
       });
+  };
+
+  const renderNotification = (notification: Notification) => {
+    return (
+      <tr key={"notification" + notification.id}>
+        <th>{notification.category.name}</th>
+        <th>{notification.channel.name}</th>
+        <th>{notification.message}</th>
+        <th>{notification.sentAt}</th>
+      </tr>
+    );
   };
 
   return (
@@ -62,7 +99,9 @@ const Dashboard = () => {
             onChange={(e) => setCategory(parseInt(e.target.value))}
           >
             {categories.map((c) => (
-              <option value={c.id}>{c.name}</option>
+              <option key={"category" + c.id} value={c.id}>
+                {c.name}
+              </option>
             ))}
           </select>
         </label>
@@ -75,9 +114,28 @@ const Dashboard = () => {
           />
         </label>
         <div>
-          <button type="submit">Send</button>
+          <button type="submit" disabled={!message}>
+            Send
+          </button>
         </div>
       </form>
+
+      {!loadingNotifications && notifications && notifications.length > 0 && (
+        <>
+          <h4>Notification History</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Channel</th>
+                <th>Message</th>
+                <th>Sent At</th>
+              </tr>
+            </thead>
+            <tbody>{notifications.map(renderNotification)}</tbody>
+          </table>
+        </>
+      )}
     </div>
   );
 };

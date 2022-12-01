@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 
 export type UserInfo = {
@@ -8,10 +9,17 @@ export type UserInfo = {
   accessToken: string;
 };
 
-const useToken = () => {
+const useUser = () => {
   const getUser = () => {
     const userString = sessionStorage.getItem("token");
     const userInfo = userString ? JSON.parse(userString) : null;
+
+    if (userInfo) {
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `bearer ${userInfo.accessToken}`;
+    }
+
     return userInfo;
   };
 
@@ -20,6 +28,10 @@ const useToken = () => {
   const saveUser = (userInfo: UserInfo) => {
     sessionStorage.setItem("token", JSON.stringify(userInfo));
     setUser(userInfo);
+
+    axios.defaults.headers.common[
+      "Authorization"
+    ] = `bearer ${userInfo.accessToken}`;
   };
 
   const clearUser = () => {
@@ -34,4 +46,4 @@ const useToken = () => {
   };
 };
 
-export default useToken;
+export default useUser;

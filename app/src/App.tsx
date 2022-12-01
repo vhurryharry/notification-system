@@ -1,10 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Login from "./components/Login/Login";
-import useToken from "./hooks/useToken";
+import useUser from "./hooks/useUser";
 
 const App = () => {
-  const { user, setUser } = useToken();
+  const { user, setUser } = useUser();
 
   if (!user) {
     return <Login setUser={setUser} />;

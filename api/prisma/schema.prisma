@@ -37,7 +37,7 @@ model Channel {
 
 model Notification {
   id                    Int                     @id @default(autoincrement())
-  content               String
+  message               String
   sentAt                DateTime
   category              Category                @relation(fields: [categoryId], references: [id])
   categoryId            Int

@@ -1,7 +1,7 @@
 import { Category, Channel } from "@prisma/client";
 
 export interface GetNotificationDto {
-  content: string;
+  message: string;
   sentAt: Date;
   category: Category;
   channel: Channel;

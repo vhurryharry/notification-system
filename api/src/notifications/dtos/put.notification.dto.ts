@@ -1,5 +1,5 @@
 export interface PutNotificationDto {
-  content?: string;
+  message?: string;
   category?: number;
   channel?: number;
 }

@@ -19,7 +19,7 @@ class NotificationsDao {
   ): Promise<Notification> {
     const result = await this.prisma.notification.create({
       data: {
-        content: notification.message,
+        message: notification.message,
         sentAt: new Date(),
         category: {
           connect: {
@@ -65,6 +65,9 @@ class NotificationsDao {
       },
       skip: limit && page ? limit * page : 0,
       take: limit,
+      orderBy: {
+        sentAt: "desc",
+      },
     });
 
     const count = await this.prisma.notification.count({
@@ -113,7 +116,7 @@ class NotificationsDao {
         id,
       },
       data: {
-        content: notification.content,
+        message: notification.message,
         category: {
           connect: {
             id: notification.category,
