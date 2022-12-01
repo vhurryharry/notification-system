@@ -3,18 +3,19 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loadNotifications } from "../../actions/notificationsActions";
-import useUser from "../../hooks/useUser";
+import { logoutUser } from "../../actions/userActions";
 import { Notification } from "../../reducers/notificationsReducer";
 import {
   getNotifications,
   isLoading,
 } from "../../selectors/notificationsSelectors";
+import { getUser } from "../../selectors/userSelectors";
 import { AppDispatch } from "../../store";
 import { API_URL } from "../../utils/api";
 import "./Dashboard.css";
 
 const Dashboard = () => {
-  const { clearUser, user } = useUser();
+  const user = useSelector(getUser);
 
   const [category, setCategory] = useState(1);
   const [message, setMessage] = useState("");
@@ -48,7 +49,7 @@ const Dashboard = () => {
   ];
 
   const logout = () => {
-    clearUser();
+    dispatch(logoutUser());
     navigate(0);
   };
 

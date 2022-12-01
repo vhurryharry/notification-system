@@ -1,41 +1,24 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { AppDispatch } from "../../store";
+import { useDispatch } from "react-redux";
+import { login } from "../../actions/userActions";
+import { useSelector } from "react-redux";
+import { getError } from "../../selectors/userSelectors";
+
 import "./Login.css";
-import { API_URL } from "../../utils/api";
 
-type LoginProps = {
-  setUser: Function;
-};
-
-const Login = ({ setUser }: LoginProps) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
 
-  const loginUser = async () => {
-    return axios
-      .post(
-        `${API_URL}/login`,
-        {
-          email,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((response) => response.data)
-      .catch((err) => setError(true));
-  };
+  const dispatch: AppDispatch = useDispatch();
+
+  const error = useSelector(getError);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    setError(false);
-    const user = await loginUser();
-    setUser(user);
+    dispatch(login(email, password));
   };
 
   return (

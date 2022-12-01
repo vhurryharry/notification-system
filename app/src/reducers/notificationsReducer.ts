@@ -14,15 +14,15 @@ export type Notification = {
   };
 };
 
-export type NotificationsType = {
+export type NotificationsState = {
   notifications: Array<Notification>;
   totalCount: number;
-  error: string;
+  error: any;
   loading: boolean;
   sending: boolean;
 };
 
-const initialState: NotificationsType = {
+const initialState: NotificationsState = {
   notifications: [],
   totalCount: 0,
   error: "",
