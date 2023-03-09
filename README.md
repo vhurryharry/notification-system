@@ -2,6 +2,7 @@
 
 ## Setup Backend
 
+- `cd api`
 - `yarn`
 - `yarn setupDB` (This will create the database file and seed the initial data.)
 
